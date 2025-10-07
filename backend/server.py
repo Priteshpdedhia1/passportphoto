@@ -40,9 +40,6 @@ UPLOADS_DIR.mkdir(exist_ok=True)
 # Create the main app without a prefix
 app = FastAPI(title="Passport Photo Generator API")
 
-# Mount uploads directory for serving files
-app.mount("/uploads", StaticFiles(directory=str(UPLOADS_DIR)), name="uploads")
-
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
 
