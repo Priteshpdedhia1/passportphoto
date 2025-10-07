@@ -15,7 +15,7 @@ import io
 import cv2
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
-from google.oauth2.credentials import Credentials
+from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseUpload
 import re
