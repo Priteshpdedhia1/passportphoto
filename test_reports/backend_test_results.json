@@ -1,0 +1,72 @@
+{
+  "timestamp": "2025-10-07T20:18:19.020810",
+  "backend_url": "https://snapid-generator-1.preview.emergentagent.com",
+  "total_tests": 7,
+  "passed_tests": 7,
+  "success_rate": "100.0%",
+  "results": [
+    {
+      "test": "Health Check",
+      "success": true,
+      "message": "Backend healthy, MongoDB connected",
+      "details": {
+        "status_code": 200,
+        "data": {
+          "status": "healthy",
+          "mongodb": "connected",
+          "google_drive": "optional (configured via user OAuth)"
+        }
+      }
+    },
+    {
+      "test": "Process Passport - No File",
+      "success": true,
+      "message": "Correctly rejected request without file",
+      "details": {
+        "status_code": 422
+      }
+    },
+    {
+      "test": "Process Passport - Invalid File",
+      "success": true,
+      "message": "Correctly rejected non-image file",
+      "details": {
+        "status_code": 400
+      }
+    },
+    {
+      "test": "Process Passport - No Name",
+      "success": true,
+      "message": "Correctly rejected request without name",
+      "details": {
+        "status_code": 422
+      }
+    },
+    {
+      "test": "Process Passport - Invalid Name",
+      "success": true,
+      "message": "Correctly rejected name with invalid characters",
+      "details": {
+        "status_code": 400
+      }
+    },
+    {
+      "test": "Process Passport - No Face",
+      "success": true,
+      "message": "Correctly detected no face in image",
+      "details": {
+        "status_code": 400,
+        "detail": "No face detected in the photo. Please upload a clear, frontal face photo."
+      }
+    },
+    {
+      "test": "Get Photos",
+      "success": true,
+      "message": "Successfully retrieved photos list (count: 0)",
+      "details": {
+        "status_code": 200,
+        "count": 0
+      }
+    }
+  ]
+}
