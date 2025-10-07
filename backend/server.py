@@ -314,17 +314,6 @@ def upload_to_google_drive(image_bytes: bytes, filename: str) -> tuple[str, str]
         logger.error(f"Google Drive upload error: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to upload to Google Drive: {str(e)}")
 
-def get_user_email_from_token(access_token: str) -> Optional[str]:
-    """Get user email from Google OAuth token"""
-    try:
-        creds = Credentials(token=access_token)
-        service = build('oauth2', 'v2', credentials=creds)
-        user_info = service.userinfo().get().execute()
-        return user_info.get('email')
-    except Exception as e:
-        logger.error(f"Error getting user email: {str(e)}")
-        return None
-
 # ============= API ENDPOINTS =============
 
 @api_router.get("/health")
