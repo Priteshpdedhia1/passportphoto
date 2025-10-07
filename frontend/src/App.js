@@ -595,8 +595,8 @@ function App() {
           <p>Passport Photo Generator • Automatic face detection and cropping</p>
           <p className="mt-2 text-xs text-gray-500">
             {GOOGLE_DRIVE_ENABLED 
-              ? 'Photos are securely stored in your Google Drive'
-              : 'Running in local mode - photos are downloaded to your device'
+              ? 'Sign in with Google to save to Drive, or use without sign-in to download photos'
+              : 'Photos are downloaded directly to your device'
             }
           </p>
         </div>
