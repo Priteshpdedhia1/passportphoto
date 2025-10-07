@@ -330,7 +330,7 @@ async def health_check():
     return {
         "status": "healthy",
         "mongodb": mongo_status,
-        "google_drive": "optional (configured via user OAuth)"
+        "google_drive": "enabled (service account)" if GOOGLE_DRIVE_SERVICE else "disabled"
     }
 
 @api_router.post("/process-passport")
