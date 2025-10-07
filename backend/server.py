@@ -336,11 +336,17 @@ async def health_check():
 @api_router.post("/process-passport")
 async def process_passport(
     file: UploadFile = File(...),
-    name: str = Form(...),
-    authorization: Optional[str] = Header(None)
+    name: str = Form(...)
 ):
-    """Process uploaded image and create passport photo"""
+    """Process uploaded image and upload to Google Drive"""
     try:
+        # Check if Google Drive is configured
+        if not GOOGLE_DRIVE_SERVICE:
+            raise HTTPException(
+                status_code=500, 
+                detail="Google Drive service not configured. Please contact administrator."
+            )
+        
         # Validate file type
         if not file.content_type or not file.content_type.startswith('image/'):
             raise HTTPException(status_code=400, detail="Invalid file type. Please upload an image.")
@@ -383,49 +389,25 @@ async def process_passport(
         timestamp = int(time.time())
         filename = f"passport_photo_{sanitized_name}_{timestamp}.jpg"
         
-        # Determine storage mode
-        access_token = None
-        if authorization and authorization.startswith('Bearer '):
-            access_token = authorization.split('Bearer ')[1]
-        
-        storage_mode = "local"
-        drive_file_id = None
-        drive_file_url = None
-        local_file_path = None
-        download_url = None
-        user_email = None
-        
-        if access_token:
-            # Google Drive mode
-            try:
-                user_email = get_user_email_from_token(access_token)
-                drive_file_id, drive_file_url = upload_to_google_drive(processed_bytes, filename, access_token)
-                storage_mode = "google_drive"
-                logger.info(f"File uploaded to Google Drive for user: {user_email}")
-            except Exception as e:
-                logger.warning(f"Google Drive upload failed, falling back to local storage: {str(e)}")
-                # Fall back to local storage
-                storage_mode = "local"
-        
-        if storage_mode == "local":
-            # Save to local uploads folder
-            file_path = UPLOADS_DIR / filename
-            with open(file_path, 'wb') as f:
-                f.write(processed_bytes)
-            local_file_path = f"/uploads/{filename}"
-            # Construct download URL using the download endpoint
-            backend_url = os.environ.get('BACKEND_URL', 'http://localhost:8001')
-            download_url = f"{backend_url}/api/download/{filename}"
-            logger.info(f"File saved locally: {local_file_path}")
+        # Upload to Google Drive
+        try:
+            drive_file_id, drive_file_url = upload_to_google_drive(processed_bytes, filename)
+            logger.info(f"File uploaded to Google Drive: {drive_file_id}")
+        except Exception as e:
+            logger.error(f"Google Drive upload failed: {str(e)}")
+            raise HTTPException(
+                status_code=500,
+                detail=f"Failed to upload to Google Drive: {str(e)}"
+            )
         
         # Save metadata to MongoDB
         metadata = PassportPhotoMetadata(
             filename=filename,
-            storage_mode=storage_mode,
+            storage_mode="google_drive",
             drive_file_id=drive_file_id,
             drive_file_url=drive_file_url,
-            local_file_path=local_file_path,
-            user_email=user_email,
+            local_file_path=None,
+            user_email=None,
             name_on_photo=name,
             original_filename=file.filename or "unknown",
             file_size_bytes=processed_size
@@ -439,27 +421,16 @@ async def process_passport(
         
         logger.info(f"Metadata saved with ID: {metadata_id}")
         
-        # Prepare response
-        if storage_mode == "google_drive":
-            return ProcessResponse(
-                success=True,
-                mode="google_drive",
-                drive_file_id=drive_file_id,
-                drive_file_url=drive_file_url,
-                filename=filename,
-                metadata_id=metadata_id,
-                message="Photo saved to Google Drive successfully!"
-            )
-        else:
-            return ProcessResponse(
-                success=True,
-                mode="local",
-                file_path=local_file_path,
-                download_url=download_url,
-                filename=filename,
-                metadata_id=metadata_id,
-                message="Photo processed successfully!"
-            )
+        # Return success response
+        return ProcessResponse(
+            success=True,
+            mode="google_drive",
+            drive_file_id=drive_file_id,
+            drive_file_url=drive_file_url,
+            filename=filename,
+            metadata_id=metadata_id,
+            message="✓ Photo saved successfully!"
+        )
         
     except HTTPException:
         raise
