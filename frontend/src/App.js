@@ -320,23 +320,6 @@ function App() {
               <div className="bg-white rounded-xl shadow-lg p-8" data-testid="submit-section">
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">3. Generate Photo</h2>
                 
-                {/* Mode info */}
-                {GOOGLE_DRIVE_ENABLED && !accessToken && (
-                  <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                    <p className="text-sm text-blue-800">
-                      <strong>Download Mode:</strong> Sign in with Google to save directly to your Drive, or continue without sign-in to download the photo.
-                    </p>
-                  </div>
-                )}
-                
-                {GOOGLE_DRIVE_ENABLED && accessToken && (
-                  <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg">
-                    <p className="text-sm text-green-800">
-                      <strong>Google Drive Mode:</strong> Your photo will be saved to Google Drive.
-                    </p>
-                  </div>
-                )}
-
                 <button
                   onClick={handleSubmit}
                   disabled={!canSubmit || processing}
@@ -350,10 +333,10 @@ function App() {
                   {processing ? (
                     <span className="flex items-center justify-center space-x-2">
                       <Loader2 className="w-5 h-5 animate-spin" />
-                      <span>Processing your photo...</span>
+                      <span>Processing & uploading...</span>
                     </span>
                   ) : (
-                    'Generate Passport Photo'
+                    'Generate & Save to Drive'
                   )}
                 </button>
 
