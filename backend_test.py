@@ -306,6 +306,168 @@ class PassportPhotoAPITester:
                 {"error": str(e)}
             )
     
+    def test_complete_upload_process_download_flow(self):
+        """Test complete flow: upload real face photo -> process -> download"""
+        try:
+            # Use the real face photo provided
+            face_photo_path = "/tmp/real_face.jpg"
+            
+            if not os.path.exists(face_photo_path):
+                self.log_result(
+                    "Complete Flow - Real Face Photo", 
+                    False, 
+                    "Real face photo not found at /tmp/real_face.jpg",
+                    {"error": "File not found"}
+                )
+                return
+            
+            # Read the real face photo
+            with open(face_photo_path, 'rb') as f:
+                image_data = f.read()
+            
+            files = {'file': ('real_face.jpg', image_data, 'image/jpeg')}
+            data = {'name': 'John Doe'}
+            
+            print("📸 Testing complete flow with real face photo...")
+            response = requests.post(f"{API_BASE}/process-passport", files=files, data=data, timeout=30)
+            
+            if response.status_code == 200:
+                response_data = response.json()
+                
+                # Verify response structure
+                if (response_data.get('success') and 
+                    response_data.get('mode') == 'local' and 
+                    response_data.get('download_url') and 
+                    response_data.get('filename')):
+                    
+                    download_url = response_data['download_url']
+                    filename = response_data['filename']
+                    
+                    self.log_result(
+                        "Complete Flow - Process Photo", 
+                        True, 
+                        f"Successfully processed real face photo, got download URL",
+                        {
+                            "status_code": response.status_code, 
+                            "mode": response_data['mode'],
+                            "filename": filename,
+                            "download_url": download_url
+                        }
+                    )
+                    
+                    # Now test the download
+                    self.test_download_functionality(download_url, filename)
+                    
+                else:
+                    self.log_result(
+                        "Complete Flow - Process Photo", 
+                        False, 
+                        f"Response missing required fields",
+                        {"status_code": response.status_code, "response": response_data}
+                    )
+            else:
+                response_text = response.text
+                try:
+                    response_data = response.json()
+                    error_detail = response_data.get('detail', 'Unknown error')
+                except:
+                    error_detail = response_text
+                
+                self.log_result(
+                    "Complete Flow - Process Photo", 
+                    False, 
+                    f"Processing failed with status {response.status_code}: {error_detail}",
+                    {"status_code": response.status_code, "error": error_detail}
+                )
+                
+        except Exception as e:
+            self.log_result(
+                "Complete Flow - Process Photo", 
+                False, 
+                f"Test failed: {str(e)}",
+                {"error": str(e)}
+            )
+    
+    def test_download_functionality(self, download_url, expected_filename):
+        """Test the download endpoint functionality"""
+        try:
+            print(f"🔗 Testing download URL: {download_url}")
+            
+            # Test download
+            response = requests.get(download_url, timeout=15)
+            
+            if response.status_code == 200:
+                # Check content type
+                content_type = response.headers.get('content-type', '')
+                content_length = len(response.content)
+                
+                if content_type == 'image/jpeg' and content_length > 0:
+                    # Verify it's a valid JPEG by trying to open it
+                    try:
+                        from PIL import Image
+                        import io
+                        
+                        img = Image.open(io.BytesIO(response.content))
+                        width, height = img.size
+                        
+                        if width == 600 and height == 600:
+                            self.log_result(
+                                "Download Functionality", 
+                                True, 
+                                f"Successfully downloaded valid 600x600 JPEG ({content_length} bytes)",
+                                {
+                                    "status_code": response.status_code,
+                                    "content_type": content_type,
+                                    "file_size": content_length,
+                                    "dimensions": f"{width}x{height}",
+                                    "filename": expected_filename
+                                }
+                            )
+                        else:
+                            self.log_result(
+                                "Download Functionality", 
+                                False, 
+                                f"Downloaded image has wrong dimensions: {width}x{height} (expected 600x600)",
+                                {
+                                    "status_code": response.status_code,
+                                    "dimensions": f"{width}x{height}",
+                                    "expected": "600x600"
+                                }
+                            )
+                    except Exception as img_error:
+                        self.log_result(
+                            "Download Functionality", 
+                            False, 
+                            f"Downloaded file is not a valid image: {str(img_error)}",
+                            {"status_code": response.status_code, "error": str(img_error)}
+                        )
+                else:
+                    self.log_result(
+                        "Download Functionality", 
+                        False, 
+                        f"Wrong content type or empty file: {content_type}, size: {content_length}",
+                        {
+                            "status_code": response.status_code,
+                            "content_type": content_type,
+                            "content_length": content_length
+                        }
+                    )
+            else:
+                self.log_result(
+                    "Download Functionality", 
+                    False, 
+                    f"Download failed with status {response.status_code}",
+                    {"status_code": response.status_code, "response": response.text}
+                )
+                
+        except Exception as e:
+            self.log_result(
+                "Download Functionality", 
+                False, 
+                f"Download test failed: {str(e)}",
+                {"error": str(e)}
+            )
+    
     def run_all_tests(self):
         """Run all backend tests"""
         print("🚀 Starting Backend API Tests for Passport Photo Generator")
