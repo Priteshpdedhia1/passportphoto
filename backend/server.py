@@ -29,9 +29,24 @@ mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ.get('DB_NAME', 'passport_photos_db')]
 
-# Google Drive configuration (optional)
+# Google Drive configuration with service account
 GOOGLE_FOLDER_ID = os.environ.get('GOOGLE_FOLDER_ID', '')
-GOOGLE_DRIVE_ENABLED = False  # Will be set dynamically based on user token
+SERVICE_ACCOUNT_KEY_PATH = os.environ.get('SERVICE_ACCOUNT_KEY_PATH', '')
+
+# Initialize Google Drive service with service account
+GOOGLE_DRIVE_SERVICE = None
+if SERVICE_ACCOUNT_KEY_PATH and Path(SERVICE_ACCOUNT_KEY_PATH).exists():
+    try:
+        SCOPES = ['https://www.googleapis.com/auth/drive.file']
+        credentials = service_account.Credentials.from_service_account_file(
+            SERVICE_ACCOUNT_KEY_PATH, scopes=SCOPES)
+        GOOGLE_DRIVE_SERVICE = build('drive', 'v3', credentials=credentials)
+        logger.info("✓ Google Drive service account initialized successfully")
+    except Exception as e:
+        logger.error(f"Failed to initialize Google Drive service: {str(e)}")
+        GOOGLE_DRIVE_SERVICE = None
+else:
+    logger.warning("Google Drive service account not configured")
 
 # Create uploads directory for local storage
 UPLOADS_DIR = ROOT_DIR / 'uploads'
