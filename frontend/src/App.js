@@ -407,12 +407,9 @@ function App() {
               <div className="bg-white rounded-xl shadow-lg p-8" data-testid="success-section">
                 <div className="text-center mb-6">
                   <CheckCircle2 className="w-16 h-16 text-green-500 mx-auto mb-4" />
-                  <h2 className="text-2xl font-bold text-gray-900 mb-2">Success!</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2">Photo Saved!</h2>
                   <p className="text-gray-600">
-                    {driveLink 
-                      ? 'Your passport photo has been saved to Google Drive'
-                      : 'Your passport photo is ready to download'
-                    }
+                    Your passport photo has been saved to Google Drive
                   </p>
                 </div>
 
@@ -422,33 +419,9 @@ function App() {
                     <p className="text-xs text-gray-600">600x600px | 2x2 inches | 300 DPI | JPEG</p>
                   </div>
 
-                  {driveLink && (
-                    <a
-                      href={driveLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg text-center transition-colors"
-                      data-testid="view-in-drive-button"
-                    >
-                      View in Google Drive
-                    </a>
-                  )}
-
-                  {downloadUrl && (
-                    <a
-                      href={downloadUrl}
-                      download
-                      className="flex items-center justify-center space-x-2 w-full px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-colors"
-                      data-testid="download-button"
-                    >
-                      <Download className="w-5 h-5" />
-                      <span>Download Photo</span>
-                    </a>
-                  )}
-
                   <button
                     onClick={handleReset}
-                    className="w-full px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-lg transition-colors"
+                    className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors"
                     data-testid="upload-another-button"
                   >
                     Upload Another Photo
