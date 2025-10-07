@@ -182,9 +182,6 @@ function App() {
     setFaceDetected(null);
     setFaceConfidence(0);
     setName('');
-    setProcessedImage(null);
-    setDriveLink(null);
-    setDownloadUrl(null);
     setSuccess(false);
     setError('');
   };
