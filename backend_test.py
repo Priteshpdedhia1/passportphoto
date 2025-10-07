@@ -474,7 +474,7 @@ class PassportPhotoAPITester:
         print(f"Backend URL: {BACKEND_URL}")
         print("=" * 60)
         
-        # Run tests in order
+        # Run basic validation tests first
         self.test_health_endpoint()
         self.test_process_passport_no_file()
         self.test_process_passport_invalid_file()
@@ -482,6 +482,10 @@ class PassportPhotoAPITester:
         self.test_process_passport_invalid_name()
         self.test_process_passport_no_face()
         self.test_get_photos_endpoint()
+        
+        # Run the critical complete flow test
+        print("\n" + "🎯 CRITICAL FLOW TESTING" + "\n" + "=" * 60)
+        self.test_complete_upload_process_download_flow()
         
         # Print summary
         print("\n" + "=" * 60)
