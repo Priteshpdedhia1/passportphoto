@@ -273,7 +273,7 @@ function App() {
     setError('');
   };
 
-  const canSubmit = uploadedImage && name && faceDetected === true && (!GOOGLE_DRIVE_ENABLED || accessToken);
+  const canSubmit = uploadedImage && name && faceDetected === true;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
