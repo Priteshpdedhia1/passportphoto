@@ -71,9 +71,6 @@ function App() {
     // Reset states
     setError('');
     setSuccess(false);
-    setProcessedImage(null);
-    setDriveLink(null);
-    setDownloadUrl(null);
     setFaceDetected(null);
 
     // Validate file type
