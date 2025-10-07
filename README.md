@@ -121,6 +121,42 @@ yarn start
 
 Visit `http://localhost:3000` and sign in with Google!
 
+### How to Use:
+
+#### Option 1: Download Mode (Default - No Configuration)
+Works immediately without any setup:
+```bash
+# Just start the app and use it!
+# Upload photo → Enter name → Generate → Download
+```
+- ✅ No sign-in required
+- ✅ Photos downloaded directly to device
+- ✅ Complete privacy - nothing stored in cloud
+- ✅ Perfect for testing and quick use
+
+#### Option 2: Google Drive Mode (Optional)
+Requires Google OAuth setup (see GOOGLE_DRIVE_SETUP.md):
+```bash
+# 1. Configure Google Client ID
+# 2. Users sign in with Google
+# 3. Photos save automatically to their Google Drive
+```
+- ✅ Cloud storage in user's Google Drive
+- ✅ Access from any device
+- ✅ Automatic backup
+- ✅ Shareable links
+
+#### Dual Mode Support
+The app intelligently supports BOTH modes:
+- **With placeholder Client ID**: Shows Google sign-in button, but users can still use without signing in (download mode)
+- **With valid Client ID**: Users can choose to sign in (Drive) or continue without sign-in (download)
+- **Without Client ID**: Pure download mode only
+
+### Current Configuration:
+- ✅ **Download Mode**: Fully functional - photos can be downloaded
+- ✅ **Google Drive Option**: Visible but requires real OAuth credentials to use
+- 📝 To enable Google Drive: Follow setup instructions in GOOGLE_DRIVE_SETUP.md
+
 ## 📖 How It Works
 
 ### User Flow
