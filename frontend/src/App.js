@@ -21,13 +21,9 @@ function App() {
   const [name, setName] = useState('');
   const [processing, setProcessing] = useState(false);
   const [processedImage, setProcessedImage] = useState(null);
-  const [driveLink, setDriveLink] = useState(null);
-  const [downloadUrl, setDownloadUrl] = useState(null);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
   const [dragActive, setDragActive] = useState(false);
-  const [googleUser, setGoogleUser] = useState(null);
-  const [accessToken, setAccessToken] = useState(null);
 
   // Google OAuth initialization
   useEffect(() => {
