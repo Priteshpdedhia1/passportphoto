@@ -150,7 +150,6 @@ function App() {
   const handleSubmit = async () => {
     if (!imageFile || !name || faceDetected === false) return;
 
-    // Allow processing without sign-in (will download instead of saving to Drive)
     setProcessing(true);
     setError('');
 
@@ -159,26 +158,13 @@ function App() {
       formData.append('file', imageFile);
       formData.append('name', name);
 
-      const headers = {};
-      if (accessToken) {
-        headers['Authorization'] = `Bearer ${accessToken}`;
-      }
-
       const response = await axios.post(`${API}/process-passport`, formData, {
-        headers: headers,
         responseType: 'json'
       });
 
       if (response.data.success) {
         setSuccess(true);
-        
-        if (response.data.mode === 'google_drive') {
-          setDriveLink(response.data.drive_file_url);
-          toast.success('Photo saved to Google Drive successfully!');
-        } else {
-          setDownloadUrl(response.data.download_url);
-          toast.success('Photo processed successfully! Click download below.');
-        }
+        toast.success('✓ Photo saved to Google Drive successfully!');
       }
     } catch (err) {
       console.error('Processing error:', err);
