@@ -412,9 +412,9 @@ async def process_passport(
             with open(file_path, 'wb') as f:
                 f.write(processed_bytes)
             local_file_path = f"/uploads/{filename}"
-            # Construct download URL (assuming backend is accessible)
+            # Construct download URL using the download endpoint
             backend_url = os.environ.get('BACKEND_URL', 'http://localhost:8001')
-            download_url = f"{backend_url}/uploads/{filename}"
+            download_url = f"{backend_url}/api/download/{filename}"
             logger.info(f"File saved locally: {local_file_path}")
         
         # Save metadata to MongoDB
