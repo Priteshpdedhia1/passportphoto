@@ -459,6 +459,62 @@ async def get_photos(email: Optional[str] = None):
         logger.error(f"Error fetching photos: {str(e)}")
         raise HTTPException(status_code=500, detail="Failed to fetch photos")
 
+@api_router.get("/oauth/callback")
+async def oauth_callback(code: Optional[str] = None, error: Optional[str] = None):
+    """OAuth callback endpoint"""
+    if error:
+        return {"error": error, "message": "OAuth authorization failed"}
+    
+    if not code:
+        return {"error": "no_code", "message": "No authorization code received"}
+    
+    try:
+        import requests
+        
+        # Exchange code for tokens
+        token_url = "https://oauth2.googleapis.com/token"
+        token_data = {
+            'code': code,
+            'client_id': '491928435319-kb0980vrquedndl8bviph3hc4i5sd1ot.apps.googleusercontent.com',
+            'client_secret': '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',
+            'redirect_uri': 'https://snapid-generator-1.preview.emergentagent.com/api/oauth/callback',
+            'grant_type': 'authorization_code'
+        }
+        
+        response = requests.post(token_url, data=token_data)
+        
+        if response.status_code == 200:
+            tokens = response.json()
+            
+            # Save credentials
+            creds_data = {
+                'token': tokens.get('access_token'),
+                'refresh_token': tokens.get('refresh_token'),
+                'token_uri': 'https://oauth2.googleapis.com/token',
+                'client_id': '491928435319-kb0980vrquedndl8bviph3hc4i5sd1ot.apps.googleusercontent.com',
+                'client_secret': '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',
+                'scopes': ['https://www.googleapis.com/auth/drive.file']
+            }
+            
+            import json
+            output_file = ROOT_DIR / 'oauth-credentials.json'
+            with open(output_file, 'w') as f:
+                json.dump(creds_data, f, indent=2)
+            
+            logger.info("✓ OAuth credentials saved successfully")
+            
+            return {
+                "success": True,
+                "message": "✓ OAuth setup complete! Please restart backend: sudo supervisorctl restart backend"
+            }
+        else:
+            logger.error(f"Token exchange failed: {response.text}")
+            return {"error": "token_exchange_failed", "details": response.text}
+            
+    except Exception as e:
+        logger.error(f"OAuth callback error: {str(e)}")
+        return {"error": str(e)}
+
 # Custom endpoint to serve uploaded files with correct MIME type
 @api_router.get("/download/{filename}")
 async def download_file(filename: str):
