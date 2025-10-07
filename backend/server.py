@@ -489,6 +489,9 @@ async def get_photos(email: Optional[str] = None):
 # Include the router in the main app
 app.include_router(api_router)
 
+# Mount uploads directory AFTER API routes to avoid conflicts
+app.mount("/uploads", StaticFiles(directory=str(UPLOADS_DIR)), name="uploads")
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
