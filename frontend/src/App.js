@@ -381,10 +381,7 @@ function App() {
                     <div>
                       <h3 className="font-medium text-gray-900">Generate & Save</h3>
                       <p className="text-sm text-gray-600">
-                        {GOOGLE_DRIVE_ENABLED 
-                          ? 'Save to Google Drive (with sign-in) or download (without sign-in)'
-                          : 'Download your passport photo to your device'
-                        }
+                        Your passport photo will be automatically saved to Google Drive
                       </p>
                     </div>
                   </div>
