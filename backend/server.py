@@ -486,6 +486,25 @@ async def get_photos(email: Optional[str] = None):
         logger.error(f"Error fetching photos: {str(e)}")
         raise HTTPException(status_code=500, detail="Failed to fetch photos")
 
+# Custom endpoint to serve uploaded files with correct MIME type
+@api_router.get("/download/{filename}")
+async def download_file(filename: str):
+    """Serve uploaded passport photos"""
+    try:
+        file_path = UPLOADS_DIR / filename
+        if not file_path.exists():
+            raise HTTPException(status_code=404, detail="File not found")
+        
+        # Return the file with correct content type
+        return FileResponse(
+            path=str(file_path),
+            media_type="image/jpeg",
+            filename=filename
+        )
+    except Exception as e:
+        logger.error(f"Error serving file {filename}: {str(e)}")
+        raise HTTPException(status_code=404, detail="File not found")
+
 # Include the router in the main app
 app.include_router(api_router)
 
