@@ -511,7 +511,7 @@ function App() {
                       <h3 className="font-medium text-gray-900">Generate & Save</h3>
                       <p className="text-sm text-gray-600">
                         {GOOGLE_DRIVE_ENABLED 
-                          ? 'Your passport photo will be saved to Google Drive'
+                          ? 'Save to Google Drive (with sign-in) or download (without sign-in)'
                           : 'Download your passport photo to your device'
                         }
                       </p>
