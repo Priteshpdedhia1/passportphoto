@@ -274,14 +274,11 @@ def process_passport_photo(image_bytes: bytes, name: str, face_coords: Optional[
         logger.error(f"Image processing error: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Image processing failed: {str(e)}")
 
-def upload_to_google_drive(image_bytes: bytes, filename: str, access_token: str) -> tuple[str, str]:
-    """Upload file to Google Drive using user's access token"""
+def upload_to_google_drive(image_bytes: bytes, filename: str) -> tuple[str, str]:
+    """Upload file to Google Drive using service account"""
     try:
-        # Create credentials from access token
-        creds = Credentials(token=access_token)
-        
-        # Build Drive service
-        service = build('drive', 'v3', credentials=creds)
+        if not GOOGLE_DRIVE_SERVICE:
+            raise Exception("Google Drive service not initialized")
         
         # File metadata
         file_metadata = {
@@ -301,7 +298,7 @@ def upload_to_google_drive(image_bytes: bytes, filename: str, access_token: str)
         )
         
         # Upload file
-        file = service.files().create(
+        file = GOOGLE_DRIVE_SERVICE.files().create(
             body=file_metadata,
             media_body=media,
             fields='id, webViewLink'
