@@ -1,8 +1,8 @@
 {
-  "timestamp": "2025-10-07T21:09:39.321215",
+  "timestamp": "2025-10-07T21:10:45.418415",
   "backend_url": "https://snapid-generator-1.preview.emergentagent.com",
-  "total_tests": 7,
-  "passed_tests": 7,
+  "total_tests": 9,
+  "passed_tests": 9,
   "success_rate": "100.0%",
   "results": [
     {
@@ -66,6 +66,29 @@
       "details": {
         "status_code": 200,
         "count": 4
+      }
+    },
+    {
+      "test": "Complete Flow - Process Photo",
+      "success": true,
+      "message": "Successfully processed real face photo, got download URL",
+      "details": {
+        "status_code": 200,
+        "mode": "local",
+        "filename": "passport_photo_john_doe_1759871445.jpg",
+        "download_url": "https://snapid-generator-1.preview.emergentagent.com/api/download/passport_photo_john_doe_1759871445.jpg"
+      }
+    },
+    {
+      "test": "Download Functionality",
+      "success": true,
+      "message": "Successfully downloaded valid 600x600 JPEG (153801 bytes)",
+      "details": {
+        "status_code": 200,
+        "content_type": "image/jpeg",
+        "file_size": 153801,
+        "dimensions": "600x600",
+        "filename": "passport_photo_john_doe_1759871445.jpg"
       }
     }
   ]
