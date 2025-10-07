@@ -12,9 +12,9 @@ import os
 # Scopes required for Drive access
 SCOPES = ['https://www.googleapis.com/auth/drive.file']
 
-# Your OAuth Client ID from Google Cloud Console
+# Your OAuth Client ID and Secret from Google Cloud Console
 CLIENT_ID = "491928435319-kb0980vrquedndl8bviph3hc4i5sd1ot.apps.googleusercontent.com"
-CLIENT_SECRET = "GOCSPX-YOUR_CLIENT_SECRET"  # You need to get this from Google Cloud Console
+CLIENT_SECRET = "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"
 
 def generate_token():
     """Generate OAuth token and save to file"""
