@@ -199,34 +199,9 @@ function App() {
               <h1 className="text-2xl font-bold text-gray-900">Passport Photo Generator</h1>
             </div>
             
-            {GOOGLE_DRIVE_ENABLED && (
-              <div>
-                {googleUser ? (
-                  <div className="flex items-center space-x-4">
-                    <div className="flex items-center space-x-2">
-                      <img src={googleUser.picture} alt="Profile" className="w-8 h-8 rounded-full" />
-                      <span className="text-sm text-gray-700">{googleUser.name}</span>
-                    </div>
-                    <button
-                      onClick={handleLogout}
-                      className="flex items-center space-x-2 px-4 py-2 text-sm text-gray-600 hover:text-gray-900 rounded-lg hover:bg-gray-100 transition-colors"
-                      data-testid="logout-button"
-                    >
-                      <LogOut className="w-4 h-4" />
-                      <span>Sign Out</span>
-                    </button>
-                  </div>
-                ) : (
-                  <div id="googleSignInButton" data-testid="google-signin-button"></div>
-                )}
-              </div>
-            )}
-
-            {!GOOGLE_DRIVE_ENABLED && (
-              <div className="text-sm text-gray-600 bg-yellow-50 px-4 py-2 rounded-lg border border-yellow-200">
-                <span className="font-semibold">Local Mode:</span> Photos will be downloaded
-              </div>
-            )}
+            <div className="text-sm text-gray-600 bg-green-50 px-4 py-2 rounded-lg border border-green-200">
+              <span className="font-semibold">Auto-Save:</span> Photos saved to Google Drive
+            </div>
           </div>
         </div>
       </header>
