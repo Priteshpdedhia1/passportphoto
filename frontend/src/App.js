@@ -7,10 +7,9 @@ import { toast } from 'sonner';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
-const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
-// Check if Google Drive mode is enabled
-const GOOGLE_DRIVE_ENABLED = GOOGLE_CLIENT_ID && GOOGLE_CLIENT_ID !== '';
+// Google Drive is always enabled (backend service account)
+const GOOGLE_DRIVE_ENABLED = true;
 
 function App() {
   const [modelsLoaded, setModelsLoaded] = useState(false);
