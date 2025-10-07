@@ -36,25 +36,42 @@ mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ.get('DB_NAME', 'passport_photos_db')]
 
-# Google Drive configuration with service account
+# Google Drive configuration with OAuth
 GOOGLE_FOLDER_ID = os.environ.get('GOOGLE_FOLDER_ID', '')
-SERVICE_ACCOUNT_KEY_PATH = os.environ.get('SERVICE_ACCOUNT_KEY_PATH', '')
+OAUTH_CREDENTIALS_PATH = ROOT_DIR / 'oauth-credentials.json'
 
-# Initialize Google Drive service with service account
+# Initialize Google Drive service with OAuth credentials
 GOOGLE_DRIVE_SERVICE = None
-if SERVICE_ACCOUNT_KEY_PATH and Path(SERVICE_ACCOUNT_KEY_PATH).exists():
+if OAUTH_CREDENTIALS_PATH.exists():
     try:
-        # Use full Drive scope for service account to access shared folders
-        SCOPES = ['https://www.googleapis.com/auth/drive']
-        credentials = service_account.Credentials.from_service_account_file(
-            SERVICE_ACCOUNT_KEY_PATH, scopes=SCOPES)
+        import json
+        from google.oauth2.credentials import Credentials
+        from google.auth.transport.requests import Request
+        
+        # Load OAuth credentials
+        with open(OAUTH_CREDENTIALS_PATH, 'r') as f:
+            creds_data = json.load(f)
+        
+        credentials = Credentials(
+            token=creds_data.get('token'),
+            refresh_token=creds_data.get('refresh_token'),
+            token_uri=creds_data.get('token_uri'),
+            client_id=creds_data.get('client_id'),
+            client_secret=creds_data.get('client_secret'),
+            scopes=creds_data.get('scopes')
+        )
+        
+        # Refresh token if needed
+        if credentials.expired:
+            credentials.refresh(Request())
+        
         GOOGLE_DRIVE_SERVICE = build('drive', 'v3', credentials=credentials)
-        logger.info("✓ Google Drive service account initialized successfully")
+        logger.info("✓ Google Drive OAuth initialized successfully")
     except Exception as e:
-        logger.error(f"Failed to initialize Google Drive service: {str(e)}")
+        logger.error(f"Failed to initialize Google Drive OAuth: {str(e)}")
         GOOGLE_DRIVE_SERVICE = None
 else:
-    logger.warning("Google Drive service account not configured")
+    logger.warning("Google Drive OAuth credentials not configured")
 
 # Create uploads directory for local storage
 UPLOADS_DIR = ROOT_DIR / 'uploads'
