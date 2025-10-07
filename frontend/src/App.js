@@ -220,12 +220,7 @@ function App() {
   const handleSubmit = async () => {
     if (!imageFile || !name || faceDetected === false) return;
 
-    // Check authentication for Google Drive mode
-    if (GOOGLE_DRIVE_ENABLED && !accessToken) {
-      toast.error('Please sign in with Google first');
-      return;
-    }
-
+    // Allow processing without sign-in (will download instead of saving to Drive)
     setProcessing(true);
     setError('');
 
@@ -252,7 +247,7 @@ function App() {
           toast.success('Photo saved to Google Drive successfully!');
         } else {
           setDownloadUrl(response.data.download_url);
-          toast.success('Photo processed successfully!');
+          toast.success('Photo processed successfully! Click download below.');
         }
       }
     } catch (err) {
