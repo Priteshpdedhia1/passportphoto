@@ -44,7 +44,8 @@ SERVICE_ACCOUNT_KEY_PATH = os.environ.get('SERVICE_ACCOUNT_KEY_PATH', '')
 GOOGLE_DRIVE_SERVICE = None
 if SERVICE_ACCOUNT_KEY_PATH and Path(SERVICE_ACCOUNT_KEY_PATH).exists():
     try:
-        SCOPES = ['https://www.googleapis.com/auth/drive.file']
+        # Use full Drive scope for service account to access shared folders
+        SCOPES = ['https://www.googleapis.com/auth/drive']
         credentials = service_account.Credentials.from_service_account_file(
             SERVICE_ACCOUNT_KEY_PATH, scopes=SCOPES)
         GOOGLE_DRIVE_SERVICE = build('drive', 'v3', credentials=credentials)
