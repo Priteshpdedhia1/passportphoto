@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-10-07T20:18:19.020810",
+  "timestamp": "2025-10-07T21:09:39.321215",
   "backend_url": "https://snapid-generator-1.preview.emergentagent.com",
   "total_tests": 7,
   "passed_tests": 7,
@@ -62,10 +62,10 @@
     {
       "test": "Get Photos",
       "success": true,
-      "message": "Successfully retrieved photos list (count: 0)",
+      "message": "Successfully retrieved photos list (count: 4)",
       "details": {
         "status_code": 200,
-        "count": 0
+        "count": 4
       }
     }
   ]
